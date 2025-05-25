@@ -1,7 +1,13 @@
 use crate::polar::Polar;
 
-#[derive(Default, Clone, Debug)]
+#[derive(PartialEq, Debug)]
+pub enum Orientation {
+    Collinear,
+    Clockwise,
+    Counterclockwise,
+}
 
+#[derive(Default, Clone, Debug, PartialEq)]
 pub struct Vector(pub f32, pub f32);
 
 impl Vector {
@@ -16,6 +22,18 @@ impl Vector {
     pub fn add(&mut self, a: &Vector) -> &mut Self {
         self.0 += a.0;
         self.1 += a.1;
+        return self;
+    }
+
+    pub fn sub(&mut self, a: &Vector) -> &mut Self {
+        self.0 -= a.0;
+        self.1 -= a.1;
+        return self;
+    }
+
+    pub fn invert(&mut self) -> &mut Self {
+        self.0 *= -1.0;
+        self.1 *= -1.0;
         return self;
     }
 
@@ -37,6 +55,17 @@ impl Vector {
         self.0 *= s;
         self.1 *= s;
         return self;
+    }
+
+    pub fn orientation(p: &Vector, q: &Vector, r: &Vector) -> Orientation {
+        let val = (q.1 - p.1) * (r.0 - q.0) - (q.0 - p.0) * (r.1 - q.1);
+        if val > 0.0 {
+            Orientation::Clockwise
+        } else if val < 0.0 {
+            Orientation::Counterclockwise
+        } else {
+            Orientation::Collinear
+        }
     }
 }
 
@@ -68,23 +97,20 @@ mod tests {
         assert_eq!(v3.1, 6.);
     }
 
-
-    
     #[test]
     fn scale() {
         let mut v1 = Vector(1., 2.0);
-        
+
         let v3 = v1.scale(2.);
         assert_eq!(v3.0, 2.);
         assert_eq!(v3.1, 4.);
     }
 
-        #[test]
+    #[test]
     fn normalize() {
         let mut v1 = Vector(3., 0.);
         let mut v2 = Vector(0., 0.);
-        
-        
+
         let v3 = v1.normalize();
         let v4 = v2.normalize();
 
@@ -93,5 +119,19 @@ mod tests {
 
         assert_eq!(v4.0, 0.);
         assert_eq!(v4.1, 0.);
+    }
+    #[test]
+    fn orientation() {
+        let a = Vector(0., 0.);
+        let b = Vector(0., 1.);
+        let c = Vector(0., 3.);
+        let d = Vector(1., 0.);
+        let bad = Vector::orientation(&b, &a, &d);
+        let dab = Vector::orientation(&d, &a, &b);
+        let bac = Vector::orientation(&b, &a, &c);
+
+        assert_eq!(bad, Orientation::Counterclockwise);
+        assert_eq!(dab, Orientation::Clockwise);
+        assert_eq!(bac, Orientation::Collinear);
     }
 }

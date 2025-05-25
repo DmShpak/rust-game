@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
+name = "shape"
+version = "0.1.0"
+dependencies = [
+ "vector",
+]
+
+[[package]]
 name = "vector"
 version = "0.1.0"
