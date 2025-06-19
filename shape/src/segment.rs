@@ -38,6 +38,12 @@ impl Segment {
         self.vector.scale(s);
         return self;
     }
+
+    pub fn shift(&mut self, s: &Vector)-> &mut Self  {
+        self.location.add(s);
+        return self;
+    }
+
 }
 
 #[cfg(test)]
@@ -70,6 +76,7 @@ mod tests {
         );
     }
 
+    #[test]
     fn scale() {
         let mut r = Segment {
             location: Vector(1., 2.),
@@ -83,5 +90,23 @@ mod tests {
                 vector: Vector(6., -8.),
             }
         );
+    }
+
+    #[test]
+    fn shift() {
+        let mut r = Segment {
+            location: Vector(1., 2.),
+            vector: Vector(3., -4.),
+        };
+        r.shift(&Vector(1., 2.));
+
+        assert_eq!(
+            r,
+            Segment {
+                location: Vector(2., 4.),
+                vector: Vector(3., -4.),
+            }
+        );
+        
     }
 }
