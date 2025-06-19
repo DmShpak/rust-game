@@ -5,13 +5,16 @@ use crate::frame::Frame;
 /**
  * Segment described as start point and vector
  */
-#[derive(Debug)]
+#[derive(Debug,PartialEq)]
 pub struct Segment {
     pub location: Vector,
     pub vector: Vector,
 }
 
 impl Segment {
+    /**
+     * Get vector end point
+     */
     pub fn end(&self) -> Vector {
         return self.location.clone().add(&self.vector).to_owned();
     }
@@ -29,6 +32,11 @@ impl Segment {
                 f32::max(self.location.1, end.1),
             ),
         };
+    }
+
+    pub fn scale(&mut self, s: f32) -> &mut Self {
+        self.vector.scale(s);
+        return self;
     }
 }
 
@@ -58,6 +66,21 @@ mod tests {
             Frame {
                 from: Vector(1., -2.),
                 to: Vector(4., 2.)
+            }
+        );
+    }
+
+    fn scale() {
+        let mut r = Segment {
+            location: Vector(1., 2.),
+            vector: Vector(3., -4.),
+        };
+        r.scale(2.);
+        assert_eq!(
+            r,
+            Segment {
+                location: Vector(1., 2.),
+                vector: Vector(6., -8.),
             }
         );
     }
