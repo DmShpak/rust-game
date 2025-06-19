@@ -1,5 +1,8 @@
 use crate::vector::Vector;
 
+/**
+ * Polar representation of vector
+ */
 #[derive(Default, Clone, Debug)]
 pub struct Polar {
     pub length: f32,

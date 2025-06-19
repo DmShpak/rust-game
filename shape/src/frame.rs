@@ -1,4 +1,8 @@
 use vector::vector::Vector;
+/**
+ * Frame modeling the rectungle boundary of shape 
+ */
+
 
 #[derive(Debug, PartialEq)]
 pub struct Frame {
