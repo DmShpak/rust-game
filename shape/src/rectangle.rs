@@ -41,4 +41,17 @@ mod tests {
         let a = r.area();
         assert_eq!(a, 12.);
     }
+
+    
+    #[test]
+    fn to_frame() {
+        let r = Rectangle{
+                location: Vector(0.,0.),
+                dementions: Vector(3.,4.),
+        };
+        let f = r.to_frame();
+        assert_eq!(f.from, Vector(-1.5,-2.));
+        assert_eq!(f.to, Vector(1.5,2.));
+    }
+
 }
