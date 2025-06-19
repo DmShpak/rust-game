@@ -31,6 +31,25 @@ impl Vector {
         return self;
     }
 
+    pub fn clone_sub(&self, a: &Vector) -> Vector {
+        let mut result = self.clone();
+        result.sub(a);
+        return result;
+    }
+
+    pub fn clone_add(&self, a: &Vector) -> Vector {
+        let mut result = self.clone();
+        result.add(a);
+        return result;
+    }
+
+    pub fn clone_scale(&self, s: f32) -> Vector {
+        let mut result = self.clone();
+        result.scale(s);
+        return result;
+    }
+
+
     pub fn invert(&mut self) -> &mut Self {
         self.0 *= -1.0;
         self.1 *= -1.0;
@@ -66,6 +85,17 @@ impl Vector {
         } else {
             Orientation::Collinear
         }
+    }
+
+    /**
+       The dot product is useful for many things:
+       Angle between vectors:
+       If A • B > 0: vectors point in roughly the same direction
+       If A • B < 0: vectors point in opposite directions
+       If A • B = 0: vectors are perpendicular
+    */
+    pub fn dot(&self, d: &Vector) -> f32 {
+        self.0 * d.0 + self.1 * d.1
     }
 }
 
@@ -133,5 +163,15 @@ mod tests {
         assert_eq!(bad, Orientation::Counterclockwise);
         assert_eq!(dab, Orientation::Clockwise);
         assert_eq!(bac, Orientation::Collinear);
+    }
+
+    #[test]
+    fn dot() {
+        let a = Vector(1., 2.);
+        let b = Vector(3., 4.);
+
+        let c = a.dot(&b);
+
+        assert_eq!(c, 11.);
     }
 }

@@ -44,6 +44,22 @@ impl Segment {
         return self;
     }
 
+    pub fn project_point(&self, p: &Vector) -> Vector {
+        let a = self.location.clone();
+        let b = self.end();
+
+        let ab = b.clone_sub(&a);
+        let ap = p.clone_sub(&a);
+
+        let ab_dot_ab = ab.dot(&ab);
+
+        if ab_dot_ab == 0.0 {
+            return a.clone(); // line is a point
+        }
+
+        let t = ap.dot(&ab) / ab_dot_ab;
+        return self.location.clone_add(&ab.clone_scale(t));
+    }
 }
 
 #[cfg(test)]
@@ -109,4 +125,20 @@ mod tests {
         );
         
     }
+
+    #[test]
+    fn project_point() {
+        let s = Segment {
+            location: Vector(0., 0.),
+            vector: Vector(0., 2.),
+        };
+        let p = s.project_point(&Vector(1., 1.));
+
+        assert_eq!(
+            p,
+            Vector(0., 1.),
+        );
+        
+    }
+
 }
