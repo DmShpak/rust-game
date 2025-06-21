@@ -2,7 +2,9 @@
 
 members = [ 
     "vector",
-    "shape"
+    "shape",
+    "example_vector",
+    "example_shape"
 ]
 
 resolver = "2"
