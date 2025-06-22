@@ -76,16 +76,11 @@ impl Vector {
         return self;
     }
 
-    pub fn orientation(p: &Vector, q: &Vector, r: &Vector) -> Orientation {
-        let val = (q.1 - p.1) * (r.0 - q.0) - (q.0 - p.0) * (r.1 - q.1);
-        if val > 0.0 {
-            Orientation::Clockwise
-        } else if val < 0.0 {
-            Orientation::Counterclockwise
-        } else {
-            Orientation::Collinear
-        }
-    }
+    // pub fn orientation(p: &Vector, q: &Vector, r: &Vector) -> Orientation {
+    //     let pq = p.clone_sub(q);
+    //     let qr = p.clone_sub(r);
+    //     return pq.cross(&qr);
+    // }
 
     /**
        The dot product is useful for many things:
@@ -96,6 +91,23 @@ impl Vector {
     */
     pub fn dot(&self, d: &Vector) -> f32 {
         self.0 * d.0 + self.1 * d.1
+    }
+    /**
+     * Given vectors a and b:
+        cross(a, b) > 0: b is to the left of a (counter-clockwise turn).
+        cross(a, b) < 0: b is to the right of a (clockwise turn).
+        cross(a, b) = 0: a and b are collinear (parallel or same line).
+     */
+    pub fn cross(&self, d: &Vector)  -> Orientation {
+        let val = self.0 * d.1 - self.1 * d.0;
+
+        if val > 0.0 {
+            Orientation::Clockwise
+        } else if val < 0.0 {
+            Orientation::Counterclockwise
+        } else {
+            Orientation::Collinear
+        }
     }
 }
 
@@ -150,20 +162,6 @@ mod tests {
         assert_eq!(v4.0, 0.);
         assert_eq!(v4.1, 0.);
     }
-    #[test]
-    fn orientation() {
-        let a = Vector(0., 0.);
-        let b = Vector(0., 1.);
-        let c = Vector(0., 3.);
-        let d = Vector(1., 0.);
-        let bad = Vector::orientation(&b, &a, &d);
-        let dab = Vector::orientation(&d, &a, &b);
-        let bac = Vector::orientation(&b, &a, &c);
-
-        assert_eq!(bad, Orientation::Counterclockwise);
-        assert_eq!(dab, Orientation::Clockwise);
-        assert_eq!(bac, Orientation::Collinear);
-    }
 
     #[test]
     fn dot() {
@@ -173,5 +171,17 @@ mod tests {
         let c = a.dot(&b);
 
         assert_eq!(c, 11.);
+    }
+
+    #[test]
+    fn cross() {
+        let a = Vector(1., 1.);
+        let b1 = Vector(1., 4.);
+        let b2 = Vector(1., 0.5);
+        let b3 = Vector(10., 10.);
+
+        assert_eq!(a.cross(&b1), Orientation::Clockwise);
+        assert_eq!(a.cross(&b2), Orientation::Counterclockwise);
+        assert_eq!(a.cross(&b3), Orientation::Collinear);
     }
 }
