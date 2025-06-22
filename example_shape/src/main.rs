@@ -30,7 +30,9 @@ async fn main() {
             location: Vector(60., 60.),
             vector: Vector(200., 300.),
         };
-        let a = Vector(200., 150.);
+        let (x, y) = mouse_position();
+
+        let a = Vector(x, y);
         let p = s.project_point(&a);
 
         render_segment(&s, &BLUE);
