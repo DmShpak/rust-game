@@ -52,9 +52,27 @@ impl Shape {
             (Shape::Circle(c), Shape::Dot(a) ) => {
                 Shape::dot_in_circle(c,a)
             },
+            (Shape::Circle(c1), Shape::Circle(c2) ) => {
+                Shape::circles_collision(c1,c2)
+            },
             // not implemented 
             (_, _) => Option::None,
         };
+    }
+
+    fn circles_collision(a: &Circle, b:&Circle) -> Option<Vector> {
+        let ab = a.location.clone_sub(&b.location);
+        let ab_size = ab.size();
+        if ab_size  == 0. {
+            return Some(a.location.clone());
+        }else if ab_size > a.radius + b.radius {
+            return Option::None;
+        } else {
+            let ar = b.location.clone_sub(&a.location).clone_scale(a.radius/ab_size).clone_add(&a.location);
+            let br = a.location.clone_sub(&b.location).clone_scale(b.radius/ab_size).clone_add(&b.location);
+
+            return Option::Some(Vector((ar.0 + br.0) / 2., (ar.1 + br.1) / 2.));
+        }
     }
 
     fn dot_in_circle(c: &Circle, d: &Vector) -> Option<Vector> {
