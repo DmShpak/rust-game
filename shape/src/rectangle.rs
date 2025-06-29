@@ -25,6 +25,17 @@ impl Rectangle {
         };
     }
 
+    pub fn from_frame(f: &Frame) -> Rectangle {
+        let  dementions = f.to.clone_sub(&f.from);
+        let  location = f.from.clone_add(&f.to).scale(0.5).to_owned();
+
+        return Rectangle {
+            dementions,
+            location,
+        };
+    }
+
+
 }
 
 
