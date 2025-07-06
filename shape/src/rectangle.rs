@@ -3,7 +3,7 @@ use vector::vector::Vector;
 
 use super::frame::Frame;
 
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct Rectangle {
     // The center point of rectangle
     pub location: Vector,
@@ -20,9 +20,20 @@ impl Rectangle {
         let mut dementions = self.dementions.clone();
         let half = dementions.scale(0.5);
         return Frame {
-            from: self.location.clone().sub(half).to_owned(),
-            to: self.location.clone().add(half).to_owned(),
+            from: self.location.clone_sub(half).to_owned(),
+            to: self.location.clone_add(half).to_owned(),
         };
+    }
+
+    pub fn shift(&mut self, offs: &Vector) {
+        self.location.add(offs);
+        return;
+    }
+
+    pub fn clone_shift(&mut self, offs: &Vector) -> Rectangle{
+        let mut res = self.clone();
+        res.shift(offs);
+        return res;
     }
 
     pub fn from_frame(f: &Frame) -> Rectangle {
