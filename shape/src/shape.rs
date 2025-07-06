@@ -122,7 +122,7 @@ mod tests {
     fn dots_collision() {
         let a = Shape::Dot(Vector(1., 1.));
         let b = Shape::Dot(Vector(1., 1.));
-        let c = Shape::Dot(Vector(1., 1.));
+        let c = Shape::Dot(Vector(2., 2.));
 
         assert_eq!(a.collision_with(&b), Option::Some(Vector(1., 1.)));
         assert_eq!(a.collision_with(&c), Option::None);
