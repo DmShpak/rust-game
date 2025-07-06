@@ -5,6 +5,6 @@ members = [
     "shape",
     "example_vector",
     "example_shape"
-]
+, "phys"]
 
 resolver = "2"
