@@ -232,6 +232,7 @@ dependencies = [
 name = "phys"
 version = "0.1.0"
 dependencies = [
+ "range",
  "shape",
  "vector",
 ]
@@ -254,6 +255,10 @@ name = "quad-rand"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a651516ddc9168ebd67b24afd085a718be02f8858fe406591b013d101ce2f40"
+
+[[package]]
+name = "range"
+version = "0.1.0"
 
 [[package]]
 name = "shape"

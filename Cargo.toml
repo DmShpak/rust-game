@@ -4,7 +4,9 @@ members = [
     "vector",
     "shape",
     "example_vector",
-    "example_shape"
-, "phys"]
+    "example_shape",
+    "phys",
+    "range"
+    ]
 
 resolver = "2"

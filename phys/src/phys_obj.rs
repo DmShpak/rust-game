@@ -1,4 +1,5 @@
-use shape::{circle::Circle, shape::Shape};
+use range::range::Range;
+use shape::{circle::Circle, rectangle::Rectangle, shape::Shape};
 use vector::vector::Vector;
 
 #[derive(PartialEq,Debug)]
@@ -15,16 +16,83 @@ pub struct PhysObj {
 
 
 impl  PhysObj {
+
+    pub fn shift(&mut self, time: f32) {
+        self.shape.shift(self.velosity.scale(time));
+    }
+
     pub fn  predict_collision(a: &PhysObj, b: &PhysObj) -> Option<Collision> {
        match (&a.shape, &b.shape) {
             (Shape::Circle(c1), Shape::Circle(c2)) => {
                 return PhysObj::circle_vs_circle(c1, &a.velosity, c2, &b.velosity);
             }
+            (Shape::Rectangle(r1), Shape::Rectangle(r2)) => {
+                return PhysObj::rect_vs_rect(r1, &a.velosity, r2, &b.velosity);
+            }
             _ => Option::None
         }
     }
 
+    fn rect_vs_rect (r1: &Rectangle, v1: &Vector, r2: &Rectangle,v2: &Vector)  -> Option<Collision> {
+        println!("rect_vs_rect");
+        let dp = r2.location.clone_sub(&r1.location);
+        let dv = v2.clone_sub(v1);
+        let d = r1.dementions.clone_add(&r2.dementions).scale(0.5).to_owned();
 
+        // dist (dp + dv * t) = r
+        // (dp + dv * t)^2 = r^2
+        // || dp + dv * t || = r
+        // t1 = (-r - dp) / dv
+        // t2 = (r - dp) / dv
+
+        fn asix_collision_time(dp: f32, dv: f32, r: f32) -> Option<Range> {
+            if dv == 0. {
+                Option::None
+            } else {
+                let t1 = (-r - dp) / dv;
+                let t2  = (r - dp) / dv;
+                Option::Some(Range::new(t1, t2))
+            }
+        }
+
+        let cx = asix_collision_time(dp.0, dv.0, d.0);
+        let cy: Option<Range> = asix_collision_time(dp.1, dv.1, d.1);
+
+        println!("cx={:?}", cx);
+        println!("cy={:?}", cy);
+
+        if let (Some(range_x), Some(range_y)) = (cx, cy) {
+            
+                    println!("range_x={:?}", range_x);
+                    println!("range_y={:?}", range_y);
+                    println!("range_x.intercept(&range_y)={:?}", range_x.intercept(&range_y));
+                    if let Some(range_xy) = range_x.intercept(&range_y) {
+
+                        println!("range_xy={:?}", range_xy);
+
+                        let time_offset = range_xy.0;
+                        let moved1 = r1.clone_shift(&v1.clone_scale(time_offset)).to_frame();
+                        let moved2 = r2.clone_shift(&v2.clone_scale(time_offset)).to_frame();
+
+                        if let Some(intr) = moved1.intercect(&moved2) {
+                            let location = intr.center();
+                            return Some(Collision { location, time_offset })
+                        } else {
+                            println!("wtf3");
+                            // should never happen
+                        }
+                    } else {
+                        println!("wtf2");
+                    }
+
+        } else {
+                        println!("wtf1");
+                    }
+
+        Option::None
+    }
+
+    
     fn circle_vs_circle (c1: &Circle, v1: &Vector, c2: &Circle,v2: &Vector)  -> Option<Collision> {
 
         let dp = c2.location.clone_sub(&c1.location);
@@ -137,5 +205,41 @@ mod tests {
         assert_eq!(y, Option::Some(Collision{location:Vector(5., 6.), time_offset: 5.}));
     }
 
+    #[test]
+    fn reactangles_collision() {
+        let r1 =  PhysObj {
+                id: Option::None,
+                velosity: Vector(1.,1.),
+                shape: Shape::Rectangle(Rectangle {
+                    location: Vector(0.,0.),
+                    dementions: Vector(1.,1.),
+                })            
+        };
+
+        let r2 =  PhysObj {
+                id: Option::None,
+                velosity: Vector(-1.,-1.),
+                shape: Shape::Rectangle(Rectangle {
+                    location: Vector(10.,10.),
+                    dementions: Vector(1.,1.),
+                })            
+            
+        };
+
+        let r3 =  PhysObj {
+                id: Option::None,
+                velosity: Vector(-1.,-1.),
+                shape: Shape::Rectangle(Rectangle {
+                    location: Vector(10.,12.),
+                    dementions: Vector(1.,1.),
+                })            
+        };
+
+        let x = PhysObj::predict_collision(&r1, &r2);
+        let y = PhysObj::predict_collision(&r1, &r3);
+
+        assert_eq!(x, Option::Some(Collision{location:Vector(5., 5.), time_offset: 4.5}));
+        assert_eq!(y, Option::Some(Collision{location:Vector(5., 6.), time_offset: 5.5}));
+    }
     
 }

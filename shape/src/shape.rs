@@ -1,5 +1,4 @@
 use crate::frame::Frame;
-
 use super::circle::Circle;
 use super::rectangle::Rectangle;
 use super::segment::Segment;
@@ -14,6 +13,24 @@ pub enum Shape {
 }
 
 impl Shape {
+
+    pub fn shift(&mut self, offset: &Vector) {
+        match self {
+            Shape::Dot(v) => {
+                v.add(offset);
+            }
+            Shape::Rectangle(r) => {
+                r.location.add(offset);
+            }
+            Shape::Circle(c) => {
+                c.location.add(offset);
+            }
+            Shape::Segment(s) => {
+                s.location.add(offset);
+            }
+        }
+    }
+
     pub fn to_frame(&self) -> Frame {
         match self {
             Shape::Dot(p) => Frame {

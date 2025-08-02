@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 shape = {path = "../shape" }
 vector = {path = "../vector" }
+range = {path = "../range" }

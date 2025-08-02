@@ -30,7 +30,7 @@ impl Rectangle {
         return;
     }
 
-    pub fn clone_shift(&mut self, offs: &Vector) -> Rectangle{
+    pub fn clone_shift(&self, offs: &Vector) -> Rectangle{
         let mut res = self.clone();
         res.shift(offs);
         return res;
