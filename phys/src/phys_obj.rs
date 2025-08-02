@@ -34,7 +34,6 @@ impl  PhysObj {
     }
 
     fn rect_vs_rect (r1: &Rectangle, v1: &Vector, r2: &Rectangle,v2: &Vector)  -> Option<Collision> {
-        println!("rect_vs_rect");
         let dp = r2.location.clone_sub(&r1.location);
         let dv = v2.clone_sub(v1);
         let d = r1.dementions.clone_add(&r2.dementions).scale(0.5).to_owned();
@@ -58,18 +57,8 @@ impl  PhysObj {
         let cx = asix_collision_time(dp.0, dv.0, d.0);
         let cy: Option<Range> = asix_collision_time(dp.1, dv.1, d.1);
 
-        println!("cx={:?}", cx);
-        println!("cy={:?}", cy);
-
         if let (Some(range_x), Some(range_y)) = (cx, cy) {
-            
-                    println!("range_x={:?}", range_x);
-                    println!("range_y={:?}", range_y);
-                    println!("range_x.intercept(&range_y)={:?}", range_x.intercept(&range_y));
                     if let Some(range_xy) = range_x.intercept(&range_y) {
-
-                        println!("range_xy={:?}", range_xy);
-
                         let time_offset = range_xy.0;
                         let moved1 = r1.clone_shift(&v1.clone_scale(time_offset)).to_frame();
                         let moved2 = r2.clone_shift(&v2.clone_scale(time_offset)).to_frame();
@@ -78,16 +67,11 @@ impl  PhysObj {
                             let location = intr.center();
                             return Some(Collision { location, time_offset })
                         } else {
-                            println!("wtf3");
                             // should never happen
                         }
-                    } else {
-                        println!("wtf2");
                     }
 
-        } else {
-                        println!("wtf1");
-                    }
+        } 
 
         Option::None
     }
